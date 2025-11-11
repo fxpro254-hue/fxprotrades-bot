@@ -32,25 +32,47 @@ export default function Dashboard() {
 
     useEffect(() => {
         const api = new DerivAPI();
+        let balanceSubId: string | null = null;
+        let ticksSubId: string | null = null;
 
-        // Get account balance
-        api.getAccountBalance((data) => {
-            if (data.balance && typeof data.balance === 'object' && 'balance' in data.balance) {
-                const balanceData = data.balance as { balance: string; currency: string };
-                setBalance(balanceData.balance);
-                setCurrency(balanceData.currency);
-            }
-        });
+        // Authorize if token exists, then subscribe to balance
+        const token = typeof window !== 'undefined' ? localStorage.getItem('deriv_token') : null;
+        if (token) {
+            api.authorize(token, () => {
+                api.subscribeBalance((data) => {
+                    if (data.balance && typeof data.balance === 'object' && 'balance' in data.balance) {
+                        const b = data.balance as { balance: string; currency: string };
+                        setBalance(b.balance);
+                        setCurrency(b.currency);
+                    }
+                }, (subId) => {
+                    balanceSubId = subId;
+                });
+            });
+        } else {
+            // No auth: perform a one-off public balance fetch (will likely be empty)
+            api.getAccountBalance((data) => {
+                if (data.balance && typeof data.balance === 'object' && 'balance' in data.balance) {
+                    const b = data.balance as { balance: string; currency: string };
+                    setBalance(b.balance);
+                    setCurrency(b.currency);
+                }
+            });
+        }
 
-        // Get tick stream for chart
-        api.getTicks('R_100', (data) => {
+        // Ticks subscription for chart
+        api.subscribeTicks('R_100', (data) => {
             if (data.tick && typeof data.tick === 'object' && 'quote' in data.tick) {
                 const tickData = data.tick as { quote: number };
                 setTicks((prev) => [...prev.slice(-50), tickData.quote]);
             }
+        }, (subId) => {
+            ticksSubId = subId;
         });
 
         return () => {
+            if (balanceSubId) api.unsubscribe(balanceSubId);
+            if (ticksSubId) api.unsubscribe(ticksSubId);
             api.disconnect();
         };
     }, []);

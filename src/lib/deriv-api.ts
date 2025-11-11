@@ -11,6 +11,7 @@ export class DerivAPI {
   private ws: WebSocket | null = null;
   private requestId = 1;
   private callbacks: Map<number, (data: DerivResponse) => void> = new Map();
+  private subscriptionCallbacks: Map<string, (data: DerivResponse) => void> = new Map();
 
   constructor() {
     this.connect();
@@ -30,6 +31,15 @@ export class DerivAPI {
         if (callback) {
           callback(data);
           this.callbacks.delete(data.req_id);
+        }
+      }
+
+      // Route subscription messages
+      if (data.subscription && data.subscription.id) {
+        const subId = String(data.subscription.id);
+        const subCb = this.subscriptionCallbacks.get(subId);
+        if (subCb) {
+          subCb(data);
         }
       }
     };
@@ -65,16 +75,71 @@ export class DerivAPI {
     this.send({ authorize: token }, callback);
   }
 
+  // One-off balance fetch (no subscription)
   getAccountBalance(callback: (data: DerivResponse) => void) {
-    this.send({ balance: 1, subscribe: 1 }, callback);
+    this.send({ balance: 1 }, callback);
   }
 
-  getTicks(symbol: string, callback: (data: DerivResponse) => void) {
-    this.send({ ticks: symbol, subscribe: 1 }, callback);
+  // Subscribe to balance updates; resolves with subscription id
+  subscribeBalance(onUpdate: (data: DerivResponse) => void, onReady?: (subId: string) => void) {
+    this.send({ balance: 1, subscribe: 1 }, (data) => {
+      const subId = data?.subscription?.id as string | undefined;
+      if (subId) {
+        this.subscriptionCallbacks.set(subId, onUpdate);
+        if (onReady) onReady(subId);
+      } else {
+        // If no subscription (e.g., error), still call once
+        onUpdate(data);
+      }
+    });
+  }
+
+  // Unsubscribe from a given subscription id
+  unsubscribe(subId: string, callback?: (data: DerivResponse) => void) {
+    this.subscriptionCallbacks.delete(subId);
+    this.send({ forget: subId }, callback);
+  }
+
+  // Subscribe to ticks for a symbol; resolves with subscription id
+  subscribeTicks(symbol: string, onUpdate: (data: DerivResponse) => void, onReady?: (subId: string) => void) {
+    this.send({ ticks: symbol, subscribe: 1 }, (data) => {
+      const subId = data?.subscription?.id as string | undefined;
+      if (subId) {
+        this.subscriptionCallbacks.set(subId, onUpdate);
+        if (onReady) onReady(subId);
+      } else {
+        onUpdate(data);
+      }
+    });
   }
 
   getActiveSymbols(callback: (data: DerivResponse) => void) {
     this.send({ active_symbols: 'brief', product_type: 'basic' }, callback);
+  }
+
+  // Portfolio (open positions)
+  getPortfolio(callback: (data: DerivResponse) => void) {
+    this.send({ portfolio: 1 }, callback);
+  }
+
+  // Recent transactions / statement
+  getTransactions(limit: number, callback: (data: DerivResponse) => void) {
+    this.send({ statement: 1, limit }, callback);
+  }
+
+  // Propose contract (quote)
+  getProposal(request: Record<string, unknown>, callback: (data: DerivResponse) => void) {
+    this.send({ proposal: 1, ...request }, callback);
+  }
+
+  // Buy contract
+  buy(contractId: number | string, price: number, callback: (data: DerivResponse) => void) {
+    this.send({ buy: contractId, price }, callback);
+  }
+
+  // Sell contract
+  sell(contractId: number | string, callback: (data: DerivResponse) => void) {
+    this.send({ sell: contractId }, callback);
   }
 
   disconnect() {
