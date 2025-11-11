@@ -195,38 +195,41 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col">
         {/* Top bar with logo, nav (horizontal), and account/controls */}
         <div className="bg-card border-b border-border">
-          <div className="px-2 sm:px-6 py-4 flex items-center gap-2 sm:gap-4">
-            {/* Logo - shrink on mobile */}
-            <div className="flex items-center space-x-2 sm:space-x-3 flex-shrink-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {/* Mobile: Stack layout */}
+          <div className="block sm:hidden">
+            <div className="px-2 py-2 flex items-center justify-between">
+              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <div className="hidden sm:block">
-                <h1 className="text-lg font-bold text-yellow-500">FxProTrades</h1>
-                <p className="text-xs text-muted-foreground">Trading Bot</p>
-              </div>
+              <Button
+                onClick={handleLogout}
+                variant="outline"
+                className="border-yellow-500/30 hover:bg-destructive hover:text-destructive-foreground text-xs px-2"
+              >
+                Out
+              </Button>
             </div>
-
-            {/* Horizontal Navigation - takes remaining space and scrolls */}
-            <div className="relative flex-1 min-w-0 mx-1 sm:mx-4">
+            {/* Mobile nav - full width, scrollable */}
+            <div className="w-full px-2 pb-2">
               <nav
                 ref={navRef}
-                className="overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar x-scroll-touch"
+                className="w-full overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar x-scroll-touch"
                 style={{ 
                   WebkitOverflowScrolling: "touch" as const,
-                  touchAction: "pan-x pan-y pinch-zoom" as const,
-                  overscrollBehaviorX: "contain" as const
+                  touchAction: "pan-x" as const,
+                  overscrollBehaviorX: "contain" as const,
+                  display: "block" as const
                 }}
               >
-                <div className="flex items-center space-x-2 px-4 sm:px-0 min-w-max">
+                <div className="inline-flex items-center space-x-2 min-w-max">
                   {navItems.map((item) => (
                     <button
                       key={item.id}
                       data-tab={item.id}
                       onClick={() => handleNavClick(item.id)}
-                      className={`px-3 sm:px-4 py-2 rounded-md transition-all flex-shrink-0 ${
+                      className={`px-3 py-2 rounded-md transition-all whitespace-nowrap ${
                         activeNav === item.id
                           ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
                           : "text-foreground hover:bg-muted"
@@ -235,11 +238,67 @@ export default function Dashboard() {
                       {item.label}
                     </button>
                   ))}
-                  {/* Settings tab */}
                   <button
                     data-tab="settings"
                     onClick={() => handleNavClick("settings")}
-                    className={`px-3 sm:px-4 py-2 rounded-md transition-all flex-shrink-0 ${
+                    className={`px-3 py-2 rounded-md transition-all whitespace-nowrap ${
+                      activeNav === "settings"
+                        ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
+                        : "text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    Settings
+                  </button>
+                </div>
+              </nav>
+            </div>
+          </div>
+
+          {/* Desktop: Horizontal layout */}
+          <div className="hidden sm:flex px-6 py-4 items-center justify-between gap-4">
+            {/* Logo */}
+            <div className="flex items-center space-x-3 flex-shrink-0">
+              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-yellow-500">FxProTrades</h1>
+                <p className="text-xs text-muted-foreground">Trading Bot</p>
+              </div>
+            </div>
+
+            {/* Horizontal Navigation */}
+            <div className="relative flex-1 min-w-0 mx-4">
+              <nav
+                ref={navRef}
+                className="overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar x-scroll-touch"
+                style={{ 
+                  WebkitOverflowScrolling: "touch" as const,
+                  touchAction: "pan-x" as const,
+                  overscrollBehaviorX: "contain" as const
+                }}
+              >
+                <div className="flex items-center space-x-2 min-w-max">
+                  {navItems.map((item) => (
+                    <button
+                      key={item.id}
+                      data-tab={item.id}
+                      onClick={() => handleNavClick(item.id)}
+                      className={`px-4 py-2 rounded-md transition-all flex-shrink-0 ${
+                        activeNav === item.id
+                          ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
+                          : "text-foreground hover:bg-muted"
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
+                  <button
+                    data-tab="settings"
+                    onClick={() => handleNavClick("settings")}
+                    className={`px-4 py-2 rounded-md transition-all flex-shrink-0 ${
                       activeNav === "settings"
                         ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
                         : "text-foreground hover:bg-muted"
@@ -251,25 +310,24 @@ export default function Dashboard() {
               </nav>
             </div>
 
-            {/* Account summary and actions - shrink on mobile */}
-            <div className="flex items-center space-x-1 sm:space-x-3 flex-shrink-0">
-              <div className="bg-muted rounded-lg px-2 sm:px-3 py-2 hidden sm:block">
+            {/* Account summary and actions */}
+            <div className="flex items-center space-x-3 flex-shrink-0">
+              <div className="bg-muted rounded-lg px-3 py-2">
                 <p className="text-[10px] text-muted-foreground leading-none">Balance</p>
                 <p className="text-sm font-semibold text-yellow-500 leading-tight">
                   {currency} {balance}
                 </p>
               </div>
-              <div className={`px-2 sm:px-3 py-2 rounded-lg hidden md:flex items-center space-x-2 ${botRunning ? "bg-green-500/20 text-green-500" : "bg-muted"}`}>
+              <div className={`px-3 py-2 rounded-lg hidden md:flex items-center space-x-2 ${botRunning ? "bg-green-500/20 text-green-500" : "bg-muted"}`}>
                 <div className={`w-2 h-2 rounded-full ${botRunning ? "bg-green-500 animate-pulse" : "bg-gray-500"}`} />
                 <span className="text-xs">{botRunning ? "Bot running" : "Bot stopped"}</span>
               </div>
               <Button
                 onClick={handleLogout}
                 variant="outline"
-                className="border-yellow-500/30 hover:bg-destructive hover:text-destructive-foreground text-xs sm:text-sm px-2 sm:px-4"
+                className="border-yellow-500/30 hover:bg-destructive hover:text-destructive-foreground"
               >
-                <span className="hidden sm:inline">Logout</span>
-                <span className="sm:hidden">Out</span>
+                Logout
               </Button>
             </div>
           </div>
