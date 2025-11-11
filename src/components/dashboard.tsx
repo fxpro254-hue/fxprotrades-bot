@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import type { PointerEvent as ReactPointerEvent } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DerivAPI, logout } from "@/lib/deriv-api";
@@ -63,6 +64,10 @@ export default function Dashboard() {
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const navRef = useRef<HTMLDivElement | null>(null);
+  const isDraggingRef = useRef(false);
+  const dragMovedRef = useRef(false);
+  const dragStartXRef = useRef(0);
+  const scrollStartRef = useRef(0);
 
   const centerActiveTab = (id: string) => {
     const container = navRef.current;
@@ -75,6 +80,75 @@ export default function Dashboard() {
     const targetScrollLeft = offset + container.scrollLeft - (containerRect.width / 2 - elRect.width / 2);
     container.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: "smooth" });
   };
+
+  const handlePointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!navRef.current) return;
+    isDraggingRef.current = true;
+    dragMovedRef.current = false;
+    dragStartXRef.current = e.clientX;
+    scrollStartRef.current = navRef.current.scrollLeft;
+    navRef.current.setPointerCapture?.(e.pointerId);
+    navRef.current.dataset.dragging = "true";
+  };
+
+  const handlePointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current || !navRef.current) return;
+    const delta = dragStartXRef.current - e.clientX;
+    if (Math.abs(delta) > 3) {
+      dragMovedRef.current = true;
+    }
+    navRef.current.scrollLeft = scrollStartRef.current + delta;
+  };
+
+  const endPointerDrag = (pointerId?: number) => {
+    if (!navRef.current) return;
+    isDraggingRef.current = false;
+    delete navRef.current.dataset.dragging;
+    if (pointerId !== undefined) {
+      try {
+        if (navRef.current.hasPointerCapture?.(pointerId)) {
+          navRef.current.releasePointerCapture(pointerId);
+        }
+      } catch (error) {
+        // Ignore browsers without pointer capture support
+      }
+    }
+    if (dragMovedRef.current) {
+      // Defer reset until after potential click event runs
+      window.setTimeout(() => {
+        dragMovedRef.current = false;
+      }, 0);
+    }
+  };
+
+  const handlePointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!navRef.current) return;
+    endPointerDrag(e.pointerId);
+  };
+
+  const handlePointerLeave = (e: ReactPointerEvent<HTMLDivElement>) => {
+    if (!isDraggingRef.current) return;
+    endPointerDrag(e.pointerId);
+  };
+
+  const handlePointerCancel = (e: ReactPointerEvent<HTMLDivElement>) => {
+    endPointerDrag(e.pointerId);
+  };
+
+  const handleNavClick = (id: string) => {
+    if (dragMovedRef.current) {
+      // Treat as drag, not tap
+      dragMovedRef.current = false;
+      return;
+    }
+    setActiveNav(id);
+    requestAnimationFrame(() => centerActiveTab(id));
+  };
+
+  useEffect(() => {
+    requestAnimationFrame(() => centerActiveTab(activeNav));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeNav]);
 
   useEffect(() => {
     // Initialize theme from storage
@@ -183,17 +257,21 @@ export default function Dashboard() {
 
             {/* Horizontal Navigation */}
             <div className="relative flex-1 mx-2 sm:mx-6">
-              <nav ref={navRef} className="overflow-x-auto no-scrollbar scroll-smooth x-scroll-touch">
+              <nav
+                ref={navRef}
+                onPointerDown={handlePointerDown}
+                onPointerMove={handlePointerMove}
+                onPointerUp={handlePointerUp}
+                onPointerLeave={handlePointerLeave}
+                onPointerCancel={handlePointerCancel}
+                className="overflow-x-auto no-scrollbar scroll-smooth x-scroll-touch cursor-grab data-[dragging=true]:cursor-grabbing"
+              >
                 <div className="flex items-center space-x-2 px-8 sm:px-0 min-w-max whitespace-nowrap">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     data-tab={item.id}
-                    onClick={() => {
-                      setActiveNav(item.id);
-                      // center after state updates paint
-                      requestAnimationFrame(() => centerActiveTab(item.id));
-                    }}
+                      onClick={() => handleNavClick(item.id)}
                       className={`px-4 py-2 rounded-md transition-all ${
                       activeNav === item.id
                         ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
@@ -205,9 +283,9 @@ export default function Dashboard() {
                 ))}
                 {/* Settings tab */}
                 <button
-                  onClick={() => setActiveNav("settings")}
                   data-tab="settings"
-                    className={`px-4 py-2 rounded-md transition-all ${
+                  onClick={() => handleNavClick("settings")}
+                  className={`px-4 py-2 rounded-md transition-all ${
                     activeNav === "settings"
                       ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
                       : "text-foreground hover:bg-muted"
