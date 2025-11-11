@@ -212,24 +212,18 @@ export default function Dashboard() {
               </Button>
             </div>
             {/* Mobile nav - full width, scrollable */}
-            <div className="w-full px-2 pb-2">
+            <div className="w-full pb-2">
               <nav
                 ref={navRef}
-                className="w-full overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar x-scroll-touch"
-                style={{ 
-                  WebkitOverflowScrolling: "touch" as const,
-                  touchAction: "pan-x" as const,
-                  overscrollBehaviorX: "contain" as const,
-                  display: "block" as const
-                }}
+                className="mobile-nav-scroll no-scrollbar"
               >
-                <div className="inline-flex items-center space-x-2 min-w-max">
+                <div className="inline-flex items-center gap-2 px-2">
                   {navItems.map((item) => (
                     <button
                       key={item.id}
                       data-tab={item.id}
                       onClick={() => handleNavClick(item.id)}
-                      className={`px-3 py-2 rounded-md transition-all whitespace-nowrap ${
+                      className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
                         activeNav === item.id
                           ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
                           : "text-foreground hover:bg-muted"
@@ -241,7 +235,7 @@ export default function Dashboard() {
                   <button
                     data-tab="settings"
                     onClick={() => handleNavClick("settings")}
-                    className={`px-3 py-2 rounded-md transition-all whitespace-nowrap ${
+                    className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
                       activeNav === "settings"
                         ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
                         : "text-foreground hover:bg-muted"

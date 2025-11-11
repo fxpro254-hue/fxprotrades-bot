@@ -18,6 +18,24 @@
 	touch-action: pan-x;               /* allow horizontal pan gestures */
 }
 
+/* Mobile nav scroll container - ensures scrolling works */
+.mobile-nav-scroll {
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+	touch-action: pan-x;
+	overscroll-behavior-x: contain;
+	display: block;
+	white-space: nowrap;
+	position: relative;
+}
+
+.mobile-nav-scroll > * {
+	display: inline-flex;
+	min-width: max-content;
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;
