@@ -154,7 +154,8 @@ export class DerivAPI {
 }
 
 export function getOAuthURL() {
-  return `https://oauth.deriv.com/oauth2/authorize?app_id=${DERIV_APP_ID}&l=EN&brand=deriv`;
+  const redirect = encodeURIComponent(OAUTH_URL);
+  return `https://oauth.deriv.com/oauth2/authorize?app_id=${DERIV_APP_ID}&l=EN&brand=deriv&redirect_uri=${redirect}`;
 }
 
 export function handleOAuthCallback() {
