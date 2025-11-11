@@ -2,9 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Hide scrollbars but keep scrollability */
-.no-scrollbar::-webkit-scrollbar { display: none; }
-.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+/* Hide scrollbar but keep scroll working */
+.no-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+.no-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+}
 
 /* Improve horizontal touch scrolling on mobile (iOS/Android) */
 .x-scroll-touch {
