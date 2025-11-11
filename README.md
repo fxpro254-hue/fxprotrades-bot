@@ -1,1 +1,1 @@
-# fxnew-bot
+# fxprotrades-bot
