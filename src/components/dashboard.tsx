@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { DerivAPI, logout } from "@/lib/deriv-api";
@@ -62,6 +62,7 @@ export default function Dashboard() {
   const [ticks, setTicks] = useState<number[]>([]);
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const navRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     // Initialize theme from storage
@@ -169,8 +170,29 @@ export default function Dashboard() {
             </div>
 
             {/* Horizontal Navigation */}
-            <nav className="flex-1 mx-6 overflow-x-auto">
-              <div className="flex items-center space-x-2 min-w-max">
+            <div className="relative flex-1 mx-2 sm:mx-6">
+              {/* Mobile scroll controls */}
+              <button
+                aria-label="Scroll left"
+                className="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur border border-border rounded-full p-2 shadow"
+                onClick={() => navRef.current?.scrollBy({ left: -200, behavior: "smooth" })}
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                aria-label="Scroll right"
+                className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur border border-border rounded-full p-2 shadow"
+                onClick={() => navRef.current?.scrollBy({ left: 200, behavior: "smooth" })}
+              >
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+
+              <nav ref={navRef} className="overflow-x-auto no-scrollbar scroll-smooth">
+                <div className="flex items-center space-x-2 px-8 sm:px-0 min-w-max">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
@@ -195,8 +217,9 @@ export default function Dashboard() {
                 >
                   Settings
                 </button>
-              </div>
-            </nav>
+                </div>
+              </nav>
+            </div>
 
             {/* Account summary and actions */}
             <div className="flex items-center space-x-3">
