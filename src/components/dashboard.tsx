@@ -191,13 +191,13 @@ export default function Dashboard() {
                 </svg>
               </button>
 
-              <nav ref={navRef} className="overflow-x-auto no-scrollbar scroll-smooth">
-                <div className="flex items-center space-x-2 px-8 sm:px-0 min-w-max">
+              <nav ref={navRef} className="overflow-x-auto no-scrollbar scroll-smooth x-scroll-touch">
+                <div className="flex items-center space-x-2 px-8 sm:px-0 min-w-max whitespace-nowrap">
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => setActiveNav(item.id)}
-                    className={`px-4 py-2 rounded-md whitespace-nowrap transition-all ${
+                      className={`px-4 py-2 rounded-md transition-all ${
                       activeNav === item.id
                         ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
                         : "text-foreground hover:bg-muted"
@@ -209,7 +209,7 @@ export default function Dashboard() {
                 {/* Settings tab */}
                 <button
                   onClick={() => setActiveNav("settings")}
-                  className={`px-4 py-2 rounded-md whitespace-nowrap transition-all ${
+                    className={`px-4 py-2 rounded-md transition-all ${
                     activeNav === "settings"
                       ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
                       : "text-foreground hover:bg-muted"

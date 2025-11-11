@@ -6,6 +6,13 @@
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
+/* Improve horizontal touch scrolling on mobile (iOS/Android) */
+.x-scroll-touch {
+	-webkit-overflow-scrolling: touch; /* iOS momentum scroll */
+	overscroll-behavior-x: contain;    /* prevent parent scroll chaining */
+	touch-action: pan-x;               /* allow horizontal pan gestures */
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;
