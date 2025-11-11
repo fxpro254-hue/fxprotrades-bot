@@ -62,7 +62,7 @@ export default function Dashboard() {
   const [ticks, setTicks] = useState<number[]>([]);
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
-  const navRef = useRef<HTMLDivElement | null>(null);
+  const navRef = useRef<HTMLElement | null>(null);
 
   const centerActiveTab = (id: string) => {
     const container = navRef.current;
@@ -171,6 +171,24 @@ export default function Dashboard() {
     window.location.reload();
   };
 
+  // Helper to compute polyline points safely
+  const computePolylinePoints = (arr: number[]) => {
+    if (!arr || arr.length < 2) return "";
+    const min = Math.min(...arr);
+    const max = Math.max(...arr);
+    const range = max - min || 1; // avoid division by zero
+    return arr
+      .map((tick, i) => {
+        const x = i * (400 / arr.length);
+        const normalized = (tick - min) / range; // 0..1
+        const y = 200 - normalized * 180; // leave some padding
+        return `${x},${y}`;
+      })
+      .join(" ");
+  };
+
+  const points = computePolylinePoints(ticks);
+
   return (
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Main container */}
@@ -195,7 +213,8 @@ export default function Dashboard() {
             <div className="relative flex-1 mx-2 sm:mx-6">
               <nav
                 ref={navRef}
-                className="overflow-x-auto no-scrollbar scroll-smooth x-scroll-touch"
+                className="overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar"
+                style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-x" } as React.CSSProperties}
               >
                 <div className="flex items-center space-x-2 px-8 sm:px-0 min-w-max whitespace-nowrap">
                 {navItems.map((item) => (
@@ -351,12 +370,7 @@ export default function Dashboard() {
                   fill="none"
                   stroke="url(#gradient)"
                   strokeWidth="2"
-                  points={ticks
-                    .map(
-                      (tick, i) =>
-                        `${i * (400 / ticks.length)},${200 - ((tick - Math.min(...ticks)) / (Math.max(...ticks) - Math.min(...ticks))) * 180}`,
-                    )
-                    .join(" ")}
+                  points={points}
                 />
                 <defs>
                   <linearGradient
