@@ -1,6 +1,7 @@
-export const DERIV_APP_ID = '110104';
-export const OAUTH_URL = 'https://fxprotradesbot.vercel.app';
-export const AFFILIATE_LINK = 'https://deriv.partners/rx?sidc=1203792D-65EF-4B56-9795-E4FDF716DAEF&utm_campaign=dynamicworks&utm_medium=affiliate&utm_source=CU137432';
+export const DERIV_APP_ID = "110104";
+export const OAUTH_URL = "https://fxprotradesbot.vercel.app";
+export const AFFILIATE_LINK =
+  "https://deriv.partners/rx?sidc=1203792D-65EF-4B56-9795-E4FDF716DAEF&utm_campaign=dynamicworks&utm_medium=affiliate&utm_source=CU137432";
 
 interface DerivResponse {
   req_id?: number;
@@ -15,17 +16,20 @@ export class DerivAPI {
   private ws: WebSocket | null = null;
   private requestId = 1;
   private callbacks: Map<number, (data: DerivResponse) => void> = new Map();
-  private subscriptionCallbacks: Map<string, (data: DerivResponse) => void> = new Map();
+  private subscriptionCallbacks: Map<string, (data: DerivResponse) => void> =
+    new Map();
 
   constructor() {
     this.connect();
   }
 
   connect() {
-    this.ws = new WebSocket(`wss://ws.derivws.com/websockets/v3?app_id=${DERIV_APP_ID}`);
+    this.ws = new WebSocket(
+      `wss://ws.derivws.com/websockets/v3?app_id=${DERIV_APP_ID}`,
+    );
 
     this.ws.onopen = () => {
-      console.log('Connected to Deriv API');
+      console.log("Connected to Deriv API");
     };
 
     this.ws.onmessage = (msg) => {
@@ -49,19 +53,22 @@ export class DerivAPI {
     };
 
     this.ws.onerror = (error) => {
-      console.error('WebSocket error:', error);
+      console.error("WebSocket error:", error);
     };
 
     this.ws.onclose = () => {
-      console.log('Disconnected from Deriv API');
+      console.log("Disconnected from Deriv API");
       // Reconnect after 5 seconds
       setTimeout(() => this.connect(), 5000);
     };
   }
 
-  send(request: Record<string, unknown>, callback?: (data: DerivResponse) => void) {
+  send(
+    request: Record<string, unknown>,
+    callback?: (data: DerivResponse) => void,
+  ) {
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      console.error('WebSocket is not connected');
+      console.error("WebSocket is not connected");
       return;
     }
 
@@ -85,7 +92,10 @@ export class DerivAPI {
   }
 
   // Subscribe to balance updates; resolves with subscription id
-  subscribeBalance(onUpdate: (data: DerivResponse) => void, onReady?: (subId: string) => void) {
+  subscribeBalance(
+    onUpdate: (data: DerivResponse) => void,
+    onReady?: (subId: string) => void,
+  ) {
     this.send({ balance: 1, subscribe: 1 }, (data) => {
       const subId = data?.subscription?.id as string | undefined;
       if (subId) {
@@ -105,7 +115,11 @@ export class DerivAPI {
   }
 
   // Subscribe to ticks for a symbol; resolves with subscription id
-  subscribeTicks(symbol: string, onUpdate: (data: DerivResponse) => void, onReady?: (subId: string) => void) {
+  subscribeTicks(
+    symbol: string,
+    onUpdate: (data: DerivResponse) => void,
+    onReady?: (subId: string) => void,
+  ) {
     this.send({ ticks: symbol, subscribe: 1 }, (data) => {
       const subId = data?.subscription?.id as string | undefined;
       if (subId) {
@@ -118,7 +132,7 @@ export class DerivAPI {
   }
 
   getActiveSymbols(callback: (data: DerivResponse) => void) {
-    this.send({ active_symbols: 'brief', product_type: 'basic' }, callback);
+    this.send({ active_symbols: "brief", product_type: "basic" }, callback);
   }
 
   // Portfolio (open positions)
@@ -132,12 +146,19 @@ export class DerivAPI {
   }
 
   // Propose contract (quote)
-  getProposal(request: Record<string, unknown>, callback: (data: DerivResponse) => void) {
+  getProposal(
+    request: Record<string, unknown>,
+    callback: (data: DerivResponse) => void,
+  ) {
     this.send({ proposal: 1, ...request }, callback);
   }
 
   // Buy contract
-  buy(contractId: number | string, price: number, callback: (data: DerivResponse) => void) {
+  buy(
+    contractId: number | string,
+    price: number,
+    callback: (data: DerivResponse) => void,
+  ) {
     this.send({ buy: contractId, price }, callback);
   }
 
@@ -160,12 +181,12 @@ export function getOAuthURL() {
 
 export function handleOAuthCallback() {
   const params = new URLSearchParams(window.location.search);
-  const token1 = params.get('token1');
-  const acct1 = params.get('acct1');
+  const token1 = params.get("token1");
+  const acct1 = params.get("acct1");
 
   if (token1 && acct1) {
-    localStorage.setItem('deriv_token', token1);
-    localStorage.setItem('deriv_account', acct1);
+    localStorage.setItem("deriv_token", token1);
+    localStorage.setItem("deriv_account", acct1);
     return { token: token1, account: acct1 };
   }
 
@@ -173,10 +194,10 @@ export function handleOAuthCallback() {
 }
 
 export function getStoredAuth() {
-  if (typeof window === 'undefined') return null;
+  if (typeof window === "undefined") return null;
 
-  const token = localStorage.getItem('deriv_token');
-  const account = localStorage.getItem('deriv_account');
+  const token = localStorage.getItem("deriv_token");
+  const account = localStorage.getItem("deriv_account");
 
   if (token && account) {
     return { token, account };
@@ -186,7 +207,7 @@ export function getStoredAuth() {
 }
 
 export function logout() {
-  localStorage.removeItem('deriv_token');
-  localStorage.removeItem('deriv_account');
-  localStorage.removeItem('skip_login');
+  localStorage.removeItem("deriv_token");
+  localStorage.removeItem("deriv_account");
+  localStorage.removeItem("skip_login");
 }
