@@ -63,7 +63,6 @@ export default function Dashboard() {
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const navRef = useRef<HTMLDivElement | null>(null);
-  const SCROLL_STEP = 280;
 
   const centerActiveTab = (id: string) => {
     const container = navRef.current;
@@ -184,26 +183,6 @@ export default function Dashboard() {
 
             {/* Horizontal Navigation */}
             <div className="relative flex-1 mx-2 sm:mx-6">
-              {/* Mobile scroll controls */}
-              <button
-                aria-label="Scroll left"
-                className="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur border border-border rounded-full p-2 shadow"
-                onClick={() => navRef.current?.scrollBy({ left: -SCROLL_STEP, behavior: "smooth" })}
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
-                </svg>
-              </button>
-              <button
-                aria-label="Scroll right"
-                className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur border border-border rounded-full p-2 shadow"
-                onClick={() => navRef.current?.scrollBy({ left: SCROLL_STEP, behavior: "smooth" })}
-              >
-                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-
               <nav ref={navRef} className="overflow-x-auto no-scrollbar scroll-smooth x-scroll-touch">
                 <div className="flex items-center space-x-2 px-8 sm:px-0 min-w-max whitespace-nowrap">
                 {navItems.map((item) => (
