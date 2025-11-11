@@ -4,6 +4,10 @@ export const AFFILIATE_LINK = 'https://deriv.partners/rx?sidc=1203792D-65EF-4B56
 
 interface DerivResponse {
   req_id?: number;
+  subscription?: {
+    id?: string;
+    [key: string]: unknown;
+  };
   [key: string]: unknown;
 }
 
