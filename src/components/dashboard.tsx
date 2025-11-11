@@ -63,6 +63,19 @@ export default function Dashboard() {
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
   const navRef = useRef<HTMLDivElement | null>(null);
+  const SCROLL_STEP = 280;
+
+  const centerActiveTab = (id: string) => {
+    const container = navRef.current;
+    if (!container) return;
+    const el = container.querySelector<HTMLButtonElement>(`button[data-tab="${id}"]`);
+    if (!el) return;
+    const containerRect = container.getBoundingClientRect();
+    const elRect = el.getBoundingClientRect();
+    const offset = elRect.left - containerRect.left; // position within container
+    const targetScrollLeft = offset + container.scrollLeft - (containerRect.width / 2 - elRect.width / 2);
+    container.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: "smooth" });
+  };
 
   useEffect(() => {
     // Initialize theme from storage
@@ -163,7 +176,7 @@ export default function Dashboard() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <div>
+              <div className="hidden sm:block">
                 <h1 className="text-lg font-bold text-yellow-500">FxProTrades</h1>
                 <p className="text-xs text-muted-foreground">Trading Bot</p>
               </div>
@@ -175,7 +188,7 @@ export default function Dashboard() {
               <button
                 aria-label="Scroll left"
                 className="sm:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur border border-border rounded-full p-2 shadow"
-                onClick={() => navRef.current?.scrollBy({ left: -200, behavior: "smooth" })}
+                onClick={() => navRef.current?.scrollBy({ left: -SCROLL_STEP, behavior: "smooth" })}
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
@@ -184,7 +197,7 @@ export default function Dashboard() {
               <button
                 aria-label="Scroll right"
                 className="sm:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-card/80 backdrop-blur border border-border rounded-full p-2 shadow"
-                onClick={() => navRef.current?.scrollBy({ left: 200, behavior: "smooth" })}
+                onClick={() => navRef.current?.scrollBy({ left: SCROLL_STEP, behavior: "smooth" })}
               >
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
@@ -196,7 +209,12 @@ export default function Dashboard() {
                 {navItems.map((item) => (
                   <button
                     key={item.id}
-                    onClick={() => setActiveNav(item.id)}
+                    data-tab={item.id}
+                    onClick={() => {
+                      setActiveNav(item.id);
+                      // center after state updates paint
+                      requestAnimationFrame(() => centerActiveTab(item.id));
+                    }}
                       className={`px-4 py-2 rounded-md transition-all ${
                       activeNav === item.id
                         ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
@@ -209,6 +227,7 @@ export default function Dashboard() {
                 {/* Settings tab */}
                 <button
                   onClick={() => setActiveNav("settings")}
+                  data-tab="settings"
                     className={`px-4 py-2 rounded-md transition-all ${
                     activeNav === "settings"
                       ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
