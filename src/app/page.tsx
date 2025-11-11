@@ -19,7 +19,13 @@ export default function Home() {
         } else {
             // Check for stored auth
             const stored = getStoredAuth();
-            setIsAuthenticated(!!stored);
+            if (stored) {
+                setIsAuthenticated(true);
+            } else {
+                // Allow bypass via "Skip login"
+                const skip = typeof window !== 'undefined' ? localStorage.getItem('skip_login') === 'true' : false;
+                setIsAuthenticated(skip);
+            }
         }
         setIsLoading(false);
     }, []);

@@ -5,7 +5,7 @@ FxProTrades is a professional trading bot platform built for Deriv affiliates. I
 
 ## Your Configuration
 - **App ID**: 110104
-- **OAuth Redirect URL**: https://fxprotrades.site
+- **OAuth Redirect URL**: https://fxprotradesbot.vercel.app
 - **Affiliate Link**: Your custom Deriv affiliate link
 - **Theme**: Black and Gold premium design
 

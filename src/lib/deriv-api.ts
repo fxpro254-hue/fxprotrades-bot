@@ -1,5 +1,5 @@
 export const DERIV_APP_ID = '110104';
-export const OAUTH_URL = 'https://fxprotrades.site';
+export const OAUTH_URL = 'https://fxprotradesbot.vercel.app';
 export const AFFILIATE_LINK = 'https://deriv.partners/rx?sidc=1203792D-65EF-4B56-9795-E4FDF716DAEF&utm_campaign=dynamicworks&utm_medium=affiliate&utm_source=CU137432';
 
 interface DerivResponse {
@@ -118,4 +118,5 @@ export function getStoredAuth() {
 export function logout() {
   localStorage.removeItem('deriv_token');
   localStorage.removeItem('deriv_account');
+  localStorage.removeItem('skip_login');
 }

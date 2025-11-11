@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { DerivAPI, logout } from '@/lib/deriv-api';
+import { DerivAPI, logout, getOAuthURL } from '@/lib/deriv-api';
 
 type NavItem = {
     id: string;
@@ -60,6 +60,14 @@ export default function Dashboard() {
         window.location.reload();
     };
 
+    const handleLogin = () => {
+        // Clear skip flag if present and redirect to Deriv OAuth
+        try {
+            localStorage.removeItem('skip_login');
+        } catch {}
+        window.location.href = getOAuthURL();
+    };
+
     return (
         <div className="flex h-screen bg-background overflow-hidden">
             {/* Sidebar */}
@@ -104,6 +112,12 @@ export default function Dashboard() {
                         <p className="text-xs text-muted-foreground">Balance</p>
                         <p className="text-lg font-bold text-yellow-500">{currency} {balance}</p>
                     </div>
+                    <Button
+                        onClick={handleLogin}
+                        className="w-full bg-gradient-to-r from-yellow-400 to-yellow-600 hover:from-yellow-500 hover:to-yellow-700 text-black"
+                    >
+                        Login with Deriv
+                    </Button>
                     <Button
                         onClick={handleLogout}
                         variant="outline"

@@ -23,6 +23,13 @@ export default function LandingPage({ onAuthenticated }: { onAuthenticated: () =
         window.open(AFFILIATE_LINK, '_blank');
     };
 
+    const handleSkipLogin = () => {
+        try {
+            localStorage.setItem('skip_login', 'true');
+        } catch {}
+        onAuthenticated();
+    };
+
     return (
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-black via-gray-900 to-black relative overflow-hidden">
             {/* Animated background effects */}
@@ -76,6 +83,14 @@ export default function LandingPage({ onAuthenticated }: { onAuthenticated: () =
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
                             </svg>
                             Create Account
+                        </Button>
+
+                        <Button
+                            onClick={handleSkipLogin}
+                            variant="secondary"
+                            className="w-full bg-muted hover:bg-muted/80 py-6 text-lg"
+                        >
+                            Skip login
                         </Button>
                     </div>
 
