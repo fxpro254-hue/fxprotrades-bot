@@ -228,25 +228,48 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Desktop: Horizontal layout */}
-          <div className="hidden sm:flex px-6 py-4 items-center justify-between gap-4">
-            {/* Logo */}
-            <div className="flex items-center space-x-3 flex-shrink-0">
-              <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+          {/* Desktop: Two-row layout */}
+          <div className="hidden sm:block px-6 py-4">
+            {/* Top row: Logo and Account info */}
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center space-x-3">
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-lg font-bold text-yellow-500">FxProTrades</h1>
+                  <p className="text-xs text-muted-foreground">Trading Bot</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-lg font-bold text-yellow-500">FxProTrades</h1>
-                <p className="text-xs text-muted-foreground">Trading Bot</p>
+
+              {/* Account summary and actions */}
+              <div className="flex items-center space-x-3">
+                <div className="bg-muted rounded-lg px-3 py-2">
+                  <p className="text-[10px] text-muted-foreground leading-none">Balance</p>
+                  <p className="text-sm font-semibold text-yellow-500 leading-tight">
+                    {currency} {balance}
+                  </p>
+                </div>
+                <div className={`px-3 py-2 rounded-lg hidden lg:flex items-center space-x-2 ${botRunning ? "bg-green-500/20 text-green-500" : "bg-muted"}`}>
+                  <div className={`w-2 h-2 rounded-full ${botRunning ? "bg-green-500 animate-pulse" : "bg-gray-500"}`} />
+                  <span className="text-xs">{botRunning ? "Bot running" : "Bot stopped"}</span>
+                </div>
+                <Button
+                  onClick={handleLogout}
+                  variant="outline"
+                  className="border-yellow-500/30 hover:bg-destructive hover:text-destructive-foreground"
+                >
+                  Logout
+                </Button>
               </div>
             </div>
 
-            {/* Horizontal Navigation */}
-            <div className="relative flex-1 min-w-0 mx-4">
+            {/* Bottom row: Navigation */}
+            <div className="w-full">
               <nav className="overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar x-scroll-touch">
-                <div className="flex items-center space-x-2 min-w-max">
+                <div className="flex items-center space-x-2 min-w-max pb-2">
                   {navItems.map((item) => (
                     <button
                       key={item.id}
@@ -272,27 +295,6 @@ export default function Dashboard() {
                   </button>
                 </div>
               </nav>
-            </div>
-
-            {/* Account summary and actions */}
-            <div className="flex items-center space-x-3 flex-shrink-0">
-              <div className="bg-muted rounded-lg px-3 py-2">
-                <p className="text-[10px] text-muted-foreground leading-none">Balance</p>
-                <p className="text-sm font-semibold text-yellow-500 leading-tight">
-                  {currency} {balance}
-                </p>
-              </div>
-              <div className={`px-3 py-2 rounded-lg hidden md:flex items-center space-x-2 ${botRunning ? "bg-green-500/20 text-green-500" : "bg-muted"}`}>
-                <div className={`w-2 h-2 rounded-full ${botRunning ? "bg-green-500 animate-pulse" : "bg-gray-500"}`} />
-                <span className="text-xs">{botRunning ? "Bot running" : "Bot stopped"}</span>
-              </div>
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                className="border-yellow-500/30 hover:bg-destructive hover:text-destructive-foreground"
-              >
-                Logout
-              </Button>
             </div>
           </div>
         </header>
