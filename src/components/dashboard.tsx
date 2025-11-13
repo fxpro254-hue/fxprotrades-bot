@@ -188,14 +188,17 @@ export default function Dashboard() {
             </div>
             
             {/* Navigation - horizontal scroll */}
-            <div className="w-full overflow-hidden">
+            <div className="w-full overflow-hidden relative">
+              {/* Scroll indicator */}
+              <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none z-10"></div>
               <div 
                 className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide pr-4"
                 style={{ 
                   WebkitOverflowScrolling: "touch",
                   scrollbarWidth: "none",
                   msOverflowStyle: "none",
-                  touchAction: "pan-x"
+                  touchAction: "pan-x",
+                  overscrollBehaviorX: "contain"
                 }}
               >
                 {navItems.map((item) => (
