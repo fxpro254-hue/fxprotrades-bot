@@ -161,9 +161,9 @@ export default function Dashboard() {
   const points = computePolylinePoints(ticks);
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="flex h-screen bg-background">
       {/* Main container */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* Header section with responsive navigation */}
         <header className="bg-card border-b border-border">
           {/* Mobile: Compact layout */}
@@ -196,7 +196,9 @@ export default function Dashboard() {
                 style={{
                   scrollbarWidth: 'none',
                   msOverflowStyle: 'none',
-                  WebkitOverflowScrolling: 'touch'
+                  WebkitOverflowScrolling: 'touch',
+                  touchAction: 'pan-x',
+                  overscrollBehaviorX: 'contain'
                 }}
               >
                 {navItems.map((item) => (

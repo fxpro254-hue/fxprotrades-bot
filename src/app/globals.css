@@ -20,11 +20,34 @@
 	touch-action: pan-x;               /* allow horizontal pan gestures */
 }
 
+/* Force mobile navigation scrolling to work */
+#mobile-nav {
+	overflow-x: scroll !important;
+	overflow-y: hidden !important;
+	-webkit-overflow-scrolling: touch !important;
+	touch-action: pan-x !important;
+	overscroll-behavior-x: contain !important;
+	scroll-behavior: smooth !important;
+	scrollbar-width: none !important;
+	-ms-overflow-style: none !important;
+}
+
+#mobile-nav::-webkit-scrollbar {
+	display: none !important;
+}
+
 /* Ensure mobile viewport is properly handled */
 @media screen and (max-width: 640px) {
 	/* Improve touch targets on mobile */
 	button {
 		min-height: 44px;
+	}
+	
+	/* Force mobile navigation to be scrollable */
+	#mobile-nav {
+		width: 100% !important;
+		display: flex !important;
+		flex-wrap: nowrap !important;
 	}
 	
 	/* Enhanced touch scrolling for mobile navigation */
