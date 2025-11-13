@@ -26,6 +26,19 @@
 	button {
 		min-height: 44px;
 	}
+	
+	/* Enhanced touch scrolling for mobile navigation */
+	.mobile-touch-scroll {
+		-webkit-overflow-scrolling: touch;
+		touch-action: pan-x;
+		overscroll-behavior-x: contain;
+		scroll-behavior: smooth;
+	}
+	
+	/* Ensure touch manipulation works properly */
+	.touch-manipulation {
+		touch-action: manipulation;
+	}
 }
 
 @layer base {

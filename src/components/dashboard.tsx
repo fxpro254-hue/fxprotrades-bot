@@ -67,8 +67,11 @@ export default function Dashboard() {
   const [ticks, setTicks] = useState<number[]>([]);
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
+  const [showMobileMenu, setShowMobileMenu] = useState(false);
+  
   const handleNavClick = (id: string) => {
     setActiveNav(id);
+    setShowMobileMenu(false); // Close mobile menu when item is selected
   };
 
   useEffect(() => {
@@ -187,40 +190,93 @@ export default function Dashboard() {
               </div>
             </div>
             
-            {/* Navigation - horizontal scroll */}
-            <div className="w-full overflow-hidden relative">
-              {/* Scroll indicator */}
-              <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-background to-transparent pointer-events-none z-10"></div>
+            {/* Navigation - horizontal scroll with touch support */}
+            <div className="w-full relative">
+              {/* Alternative: Dropdown menu button */}
+              <div className="flex items-center justify-between mb-2">
+                <div className="text-xs text-muted-foreground">
+                  ← Swipe left/right to see all tabs →
+                </div>
+                <button
+                  onClick={() => setShowMobileMenu(!showMobileMenu)}
+                  className="text-xs bg-muted px-2 py-1 rounded-md"
+                >
+                  Menu ▼
+                </button>
+              </div>
+              
+              {/* Dropdown menu (alternative navigation) */}
+              {showMobileMenu && (
+                <div className="absolute top-8 right-0 bg-card border border-border rounded-lg shadow-lg z-20 min-w-[200px]">
+                  <div className="p-2 space-y-1">
+                    {navItems.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => handleNavClick(item.id)}
+                        className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                          activeNav === item.id
+                            ? "bg-yellow-500 text-black font-semibold"
+                            : "text-foreground hover:bg-muted"
+                        }`}
+                      >
+                        {item.label}
+                      </button>
+                    ))}
+                    <button
+                      onClick={() => handleNavClick("settings")}
+                      className={`w-full text-left px-3 py-2 rounded-md text-sm transition-colors ${
+                        activeNav === "settings"
+                          ? "bg-yellow-500 text-black font-semibold"
+                          : "text-foreground hover:bg-muted"
+                      }`}
+                    >
+                      Settings
+                    </button>
+                  </div>
+                </div>
+              )}
+              
+              {/* Scroll indicators */}
+              <div className="absolute right-0 top-8 bottom-0 w-4 bg-gradient-to-l from-background to-transparent pointer-events-none z-10"></div>
+              <div className="absolute left-0 top-8 bottom-0 w-4 bg-gradient-to-r from-background to-transparent pointer-events-none z-10"></div>
+              
               <div 
-                className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide pr-4"
+                className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide px-4"
                 style={{ 
                   WebkitOverflowScrolling: "touch",
                   scrollbarWidth: "none",
                   msOverflowStyle: "none",
                   touchAction: "pan-x",
-                  overscrollBehaviorX: "contain"
+                  overscrollBehaviorX: "contain",
+                  scrollBehavior: "smooth"
+                }}
+                onTouchStart={(e) => {
+                  // Prevent default to ensure touch scrolling works
+                  e.currentTarget.style.touchAction = "pan-x";
                 }}
               >
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors min-w-max ${
+                    className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors min-w-max touch-manipulation ${
                       activeNav === item.id
                         ? "bg-yellow-500 text-black font-semibold"
                         : "text-foreground bg-muted hover:bg-muted/80"
                     }`}
+                    style={{ minWidth: "fit-content" }}
                   >
                     {item.label}
                   </button>
                 ))}
                 <button
                   onClick={() => handleNavClick("settings")}
-                  className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors min-w-max ${
+                  className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors min-w-max touch-manipulation ${
                     activeNav === "settings"
                       ? "bg-yellow-500 text-black font-semibold"
                       : "text-foreground bg-muted hover:bg-muted/80"
                   }`}
+                  style={{ minWidth: "fit-content" }}
                 >
                   Settings
                 </button>
