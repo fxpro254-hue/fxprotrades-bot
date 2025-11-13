@@ -183,40 +183,67 @@ export default function Dashboard() {
     <div className="flex h-screen bg-background overflow-hidden">
       {/* Main container */}
       <div className="flex-1 flex flex-col">
-        {/* Top bar with logo, nav (horizontal), and account/controls */}
-        <div className="bg-card border-b border-border">
-          {/* Mobile: Stack layout */}
-          <div className="block sm:hidden">
-            <div className="px-2 py-2 flex items-center justify-between">
-              <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
-                <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
+        {/* Header section with responsive navigation */}
+        <header className="bg-card border-b border-border">
+          {/* Mobile: Vertical layout */}
+          <div className="sm:hidden flex flex-col space-y-4 p-4">
+            {/* Logo and account info */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h1 className="text-base font-bold text-yellow-500">FxProTrades</h1>
+                  <p className="text-xs text-muted-foreground">Trading Bot</p>
+                </div>
               </div>
+              <div className="text-right">
+                <p className="text-sm font-semibold">{balance} {currency}</p>
+                <p className="text-xs text-muted-foreground">Balance</p>
+              </div>
+            </div>
+
+            {/* Logout button */}
+            <div className="flex justify-end">
               <Button
                 onClick={handleLogout}
                 variant="outline"
-                className="border-yellow-500/30 hover:bg-destructive hover:text-destructive-foreground text-xs px-2"
+                size="sm"
+                className="text-xs"
               >
                 Out
               </Button>
             </div>
-            {/* Mobile nav - full width, scrollable */}
-            <div className="w-full pb-2">
+            
+            {/* Mobile nav - full width, scrollable with scroll indicators */}
+            <div className="w-full pb-2 relative">
+              {/* Scroll hint text */}
+              <div className="text-xs text-muted-foreground mb-2 text-center">
+                ← Swipe to see all tabs →
+              </div>
+              
               <nav
                 ref={navRef}
                 className="mobile-nav-scroll no-scrollbar"
+                style={{ 
+                  WebkitOverflowScrolling: "touch",
+                  touchAction: "pan-x",
+                  overscrollBehaviorX: "contain"
+                }}
               >
-                <div className="inline-flex items-center gap-2 px-2">
+                <div className="inline-flex items-center gap-2 px-2 pb-2">
                   {navItems.map((item) => (
                     <button
                       key={item.id}
                       data-tab={item.id}
                       onClick={() => handleNavClick(item.id)}
-                      className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
+                      className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 text-sm ${
                         activeNav === item.id
                           ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
-                          : "text-foreground hover:bg-muted"
+                          : "text-foreground hover:bg-muted border border-border"
                       }`}
                     >
                       {item.label}
@@ -225,16 +252,20 @@ export default function Dashboard() {
                   <button
                     data-tab="settings"
                     onClick={() => handleNavClick("settings")}
-                    className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 ${
+                    className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 text-sm ${
                       activeNav === "settings"
                         ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
-                        : "text-foreground hover:bg-muted"
+                        : "text-foreground hover:bg-muted border border-border"
                     }`}
                   >
                     Settings
                   </button>
                 </div>
               </nav>
+              
+              {/* Gradient fade indicators for scroll */}
+              <div className="absolute top-8 left-0 w-4 h-12 bg-gradient-to-r from-background to-transparent pointer-events-none z-10"></div>
+              <div className="absolute top-8 right-0 w-4 h-12 bg-gradient-to-l from-background to-transparent pointer-events-none z-10"></div>
             </div>
           </div>
 
@@ -315,15 +346,15 @@ export default function Dashboard() {
               </Button>
             </div>
           </div>
-        </div>
+        </header>
 
         {/* Content area */}
-        <div className="p-6 overflow-y-auto">
+        <div className="p-3 sm:p-6 overflow-y-auto flex-1">
           {activeNav === "dashboard" && (
           <>
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
             {/* Quick Actions */}
-            <Card className="p-6 border-yellow-500/20 hover:border-yellow-500/50 transition-all cursor-pointer group">
+            <Card className="p-4 sm:p-6 border-yellow-500/20 hover:border-yellow-500/50 transition-all cursor-pointer group">
               <div className="flex items-start space-x-4">
                 <div className="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center group-hover:bg-yellow-500 transition-all">
                   <svg

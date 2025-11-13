@@ -29,11 +29,32 @@
 	display: block;
 	white-space: nowrap;
 	position: relative;
+	scroll-behavior: smooth;
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* IE and Edge */
+}
+
+.mobile-nav-scroll::-webkit-scrollbar {
+	display: none; /* Chrome, Safari, Opera */
 }
 
 .mobile-nav-scroll > * {
 	display: inline-flex;
 	min-width: max-content;
+}
+
+/* Ensure mobile viewport is properly handled */
+@media screen and (max-width: 640px) {
+	.mobile-nav-scroll {
+		padding-left: 0.5rem;
+		padding-right: 0.5rem;
+	}
+	
+	/* Improve touch targets on mobile */
+	.mobile-nav-scroll button {
+		min-height: 44px;
+		min-width: 44px;
+	}
 }
 
 @layer base {
