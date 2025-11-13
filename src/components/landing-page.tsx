@@ -50,8 +50,22 @@ export default function LandingPage({
         <div className="text-center space-y-6">
           {/* Logo */}
           <div className="flex justify-center mb-6">
-            <div className="w-24 h-24 flex items-center justify-center">
-              <img src="/logo-dark.svg" alt="FX PRO" className="w-full h-full" />
+            <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/50 transform rotate-12">
+              <div className="w-16 h-16 bg-black rounded-xl flex items-center justify-center -rotate-12">
+                <svg
+                  className="w-10 h-10 text-yellow-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
+                </svg>
+              </div>
             </div>
           </div>
           {/* Title */}

@@ -171,12 +171,10 @@ export default function Dashboard() {
             {/* Top row: Logo, Balance, Logout */}
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 flex items-center justify-center">
-                  {theme === "dark" ? (
-                    <img src="/logo-dark.svg" alt="FX PRO" className="w-full h-full" />
-                  ) : (
-                    <img src="/logo-light.svg" alt="FX PRO" className="w-full h-full" />
-                  )}
+                <div className="w-7 h-7 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
                 </div>
                 <h1 className="text-sm font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">FX PRO</h1>
               </div>
@@ -184,6 +182,9 @@ export default function Dashboard() {
                 <div className="text-right">
                   <p className="text-xs font-semibold">{balance} {currency}</p>
                 </div>
+                <Button onClick={handleLogout} variant="outline" size="sm" className="text-xs px-3 py-1">
+                  Logout
+                </Button>
               </div>
             </div>
             
@@ -252,12 +253,10 @@ export default function Dashboard() {
             {/* Top row: Logo and Account info */}
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 flex items-center justify-center">
-                  {theme === "dark" ? (
-                    <img src="/logo-dark.svg" alt="FX PRO" className="w-full h-full" />
-                  ) : (
-                    <img src="/logo-light.svg" alt="FX PRO" className="w-full h-full" />
-                  )}
+                <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-6 h-6 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
                 </div>
                 <h1 className="text-xl font-bold bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent">FX PRO</h1>
               </div>
