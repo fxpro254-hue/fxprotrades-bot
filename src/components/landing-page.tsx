@@ -48,33 +48,21 @@ export default function LandingPage({
       {/* Main content */}
       <Card className="w-full max-w-md mx-4 p-8 bg-card/95 backdrop-blur-sm border-2 border-yellow-500/20 shadow-2xl">
         <div className="text-center space-y-6">
-          {/* Logo/Icon */}
-          <div className="flex justify-center">
-            <div className="w-20 h-20 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl flex items-center justify-center shadow-lg shadow-yellow-500/50 transform rotate-12">
-              <div className="w-16 h-16 bg-black rounded-xl flex items-center justify-center -rotate-12">
-                <svg
-                  className="w-10 h-10 text-yellow-500"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M13 10V3L4 14h7v7l9-11h-7z"
-                  />
-                </svg>
-              </div>
+          {/* Logo */}
+          <div className="flex justify-center mb-6">
+            <div className="w-24 h-24 flex items-center justify-center">
+              <img src="/logo-dark.svg" alt="FX PRO" className="w-full h-full" />
             </div>
           </div>
-
           {/* Title */}
           <div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
-              Welcome to FxProTrades
+              FX PRO
             </h1>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-lg font-semibold text-yellow-500/80 mt-2 tracking-wider">
+              WHERE STRATEGY MEETS SUCCESS
+            </p>
+            <p className="text-muted-foreground mt-3">
               Sign in to access your trading workspace
             </p>
           </div>

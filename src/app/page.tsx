@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import LandingPage from "@/components/landing-page";
 import Dashboard from "@/components/dashboard";
+import LoadingScreen from "@/components/LoadingScreen";
 import { getStoredAuth, handleOAuthCallback } from "@/lib/deriv-api";
 
 export default function Home() {
@@ -34,14 +35,7 @@ export default function Home() {
   }, []);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-center space-y-4">
-          <div className="w-16 h-16 border-4 border-yellow-500 border-t-transparent rounded-full animate-spin mx-auto"></div>
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen theme="dark" />;
   }
 
   if (!isAuthenticated) {

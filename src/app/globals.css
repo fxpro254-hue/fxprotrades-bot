@@ -64,11 +64,29 @@
 	}
 }
 
+/* Custom animations for loading screen */
+@keyframes logoZoom {
+	0%, 100% { transform: scale(1); }
+	50% { transform: scale(1.1); }
+}
+
+@keyframes goldGlow {
+	0%, 100% { filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3)); }
+	50% { filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.6)); }
+}
+
+@keyframes ringPulse {
+	0%, 100% { transform: scale(1); opacity: 0.5; }
+	50% { transform: scale(1.2); opacity: 0.8; }
+}
+
 @layer base {
     :root {
         --background: 0 0% 100%;
         --foreground: 240 10% 3.9%;
         --card: 0 0% 100%;
+        --gold: 45 100% 51%;
+        --gold-dark: 38 100% 35%;
         --card-foreground: 240 10% 3.9%;
         --popover: 0 0% 100%;
         --popover-foreground: 240 10% 3.9%;
@@ -95,18 +113,18 @@
 
     .dark {
         --background: 0 0% 7%;
-        --foreground: 45 100% 70%;
+        --foreground: 43 74% 66%;
         --card: 0 0% 10%;
-        --card-foreground: 45 100% 70%;
+        --card-foreground: 43 74% 66%;
         --popover: 0 0% 10%;
-        --popover-foreground: 45 100% 70%;
-        --primary: 45 100% 50%;
+        --popover-foreground: 43 74% 66%;
+        --primary: 43 74% 66%;
         --primary-foreground: 0 0% 0%;
         --secondary: 0 0% 15%;
-        --secondary-foreground: 45 100% 70%;
+        --secondary-foreground: 43 74% 66%;
         --muted: 0 0% 15%;
-        --muted-foreground: 45 20% 50%;
-        --accent: 45 100% 50%;
+        --muted-foreground: 43 30% 50%;
+        --accent: 43 74% 66%;
         --accent-foreground: 0 0% 0%;
         --destructive: 0 62.8% 50%;
         --destructive-foreground: 0 0% 98%;
