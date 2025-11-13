@@ -67,29 +67,9 @@ export default function Dashboard() {
   const [ticks, setTicks] = useState<number[]>([]);
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
-  const navRef = useRef<HTMLElement | null>(null);
-
-  const centerActiveTab = (id: string) => {
-    const container = navRef.current;
-    if (!container) return;
-    const el = container.querySelector<HTMLButtonElement>(`button[data-tab="${id}"]`);
-    if (!el) return;
-    const containerRect = container.getBoundingClientRect();
-    const elRect = el.getBoundingClientRect();
-    const offset = elRect.left - containerRect.left; // position within container
-    const targetScrollLeft = offset + container.scrollLeft - (containerRect.width / 2 - elRect.width / 2);
-    container.scrollTo({ left: Math.max(0, targetScrollLeft), behavior: "smooth" });
-  };
-
   const handleNavClick = (id: string) => {
     setActiveNav(id);
-    requestAnimationFrame(() => centerActiveTab(id));
   };
-
-  useEffect(() => {
-    requestAnimationFrame(() => centerActiveTab(activeNav));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeNav]);
 
   useEffect(() => {
     // Initialize theme from storage
@@ -185,87 +165,62 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col">
         {/* Header section with responsive navigation */}
         <header className="bg-card border-b border-border">
-          {/* Mobile: Vertical layout */}
-          <div className="sm:hidden flex flex-col space-y-4 p-4">
-            {/* Logo and account info */}
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <div className="w-8 h-8 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
-                  <svg className="w-5 h-5 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          {/* Mobile: Compact layout */}
+          <div className="sm:hidden p-3">
+            {/* Top row: Logo, Balance, Logout */}
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center space-x-2">
+                <div className="w-7 h-7 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center">
+                  <svg className="w-4 h-4 text-black" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                   </svg>
                 </div>
-                <div>
-                  <h1 className="text-base font-bold text-yellow-500">FxProTrades</h1>
-                  <p className="text-xs text-muted-foreground">Trading Bot</p>
+                <h1 className="text-sm font-bold text-yellow-500">FxProTrades</h1>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="text-right">
+                  <p className="text-xs font-semibold">{balance} {currency}</p>
                 </div>
+                <Button onClick={handleLogout} variant="outline" size="sm" className="text-xs px-2 py-1">
+                  Out
+                </Button>
               </div>
-              <div className="text-right">
-                <p className="text-sm font-semibold">{balance} {currency}</p>
-                <p className="text-xs text-muted-foreground">Balance</p>
-              </div>
-            </div>
-
-            {/* Logout button */}
-            <div className="flex justify-end">
-              <Button
-                onClick={handleLogout}
-                variant="outline"
-                size="sm"
-                className="text-xs"
-              >
-                Out
-              </Button>
             </div>
             
-            {/* Mobile nav - full width, scrollable with scroll indicators */}
-            <div className="w-full pb-2 relative">
-              {/* Scroll hint text */}
-              <div className="text-xs text-muted-foreground mb-2 text-center">
-                ← Swipe to see all tabs →
-              </div>
-              
-              <nav
-                ref={navRef}
-                className="mobile-nav-scroll no-scrollbar"
+            {/* Navigation - horizontal scroll */}
+            <div className="w-full">
+              <div 
+                className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
                 style={{ 
                   WebkitOverflowScrolling: "touch",
-                  touchAction: "pan-x",
-                  overscrollBehaviorX: "contain"
+                  scrollbarWidth: "none",
+                  msOverflowStyle: "none"
                 }}
               >
-                <div className="inline-flex items-center gap-2 px-2 pb-2">
-                  {navItems.map((item) => (
-                    <button
-                      key={item.id}
-                      data-tab={item.id}
-                      onClick={() => handleNavClick(item.id)}
-                      className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 text-sm ${
-                        activeNav === item.id
-                          ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
-                          : "text-foreground hover:bg-muted border border-border"
-                      }`}
-                    >
-                      {item.label}
-                    </button>
-                  ))}
+                {navItems.map((item) => (
                   <button
-                    data-tab="settings"
-                    onClick={() => handleNavClick("settings")}
-                    className={`px-3 py-2 rounded-md transition-all whitespace-nowrap flex-shrink-0 text-sm ${
-                      activeNav === "settings"
-                        ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
-                        : "text-foreground hover:bg-muted border border-border"
+                    key={item.id}
+                    onClick={() => handleNavClick(item.id)}
+                    className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors ${
+                      activeNav === item.id
+                        ? "bg-yellow-500 text-black font-semibold"
+                        : "text-foreground bg-muted hover:bg-muted/80"
                     }`}
                   >
-                    Settings
+                    {item.label}
                   </button>
-                </div>
-              </nav>
-              
-              {/* Gradient fade indicators for scroll */}
-              <div className="absolute top-8 left-0 w-4 h-12 bg-gradient-to-r from-background to-transparent pointer-events-none z-10"></div>
-              <div className="absolute top-8 right-0 w-4 h-12 bg-gradient-to-l from-background to-transparent pointer-events-none z-10"></div>
+                ))}
+                <button
+                  onClick={() => handleNavClick("settings")}
+                  className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors ${
+                    activeNav === "settings"
+                      ? "bg-yellow-500 text-black font-semibold"
+                      : "text-foreground bg-muted hover:bg-muted/80"
+                  }`}
+                >
+                  Settings
+                </button>
+              </div>
             </div>
           </div>
 
@@ -286,24 +241,15 @@ export default function Dashboard() {
 
             {/* Horizontal Navigation */}
             <div className="relative flex-1 min-w-0 mx-4">
-              <nav
-                ref={navRef}
-                className="overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar x-scroll-touch"
-                style={{ 
-                  WebkitOverflowScrolling: "touch" as const,
-                  touchAction: "pan-x" as const,
-                  overscrollBehaviorX: "contain" as const
-                }}
-              >
+              <nav className="overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar x-scroll-touch">
                 <div className="flex items-center space-x-2 min-w-max">
                   {navItems.map((item) => (
                     <button
                       key={item.id}
-                      data-tab={item.id}
                       onClick={() => handleNavClick(item.id)}
                       className={`px-4 py-2 rounded-md transition-all flex-shrink-0 ${
                         activeNav === item.id
-                          ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
+                          ? "bg-yellow-500 text-black font-semibold"
                           : "text-foreground hover:bg-muted"
                       }`}
                     >
@@ -311,11 +257,10 @@ export default function Dashboard() {
                     </button>
                   ))}
                   <button
-                    data-tab="settings"
                     onClick={() => handleNavClick("settings")}
                     className={`px-4 py-2 rounded-md transition-all flex-shrink-0 ${
                       activeNav === "settings"
-                        ? "bg-yellow-500 text-black font-semibold shadow-lg shadow-yellow-500/30"
+                        ? "bg-yellow-500 text-black font-semibold"
                         : "text-foreground hover:bg-muted"
                     }`}
                   >

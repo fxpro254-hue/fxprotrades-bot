@@ -3,10 +3,12 @@
 @tailwind utilities;
 
 /* Hide scrollbar but keep scroll working */
-.no-scrollbar::-webkit-scrollbar {
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
 	display: none;
 }
-.no-scrollbar {
+.no-scrollbar,
+.scrollbar-hide {
 	-ms-overflow-style: none; /* IE and Edge */
 	scrollbar-width: none; /* Firefox */
 }
@@ -18,42 +20,11 @@
 	touch-action: pan-x;               /* allow horizontal pan gestures */
 }
 
-/* Mobile nav scroll container - ensures scrolling works */
-.mobile-nav-scroll {
-	width: 100%;
-	overflow-x: auto;
-	overflow-y: hidden;
-	-webkit-overflow-scrolling: touch;
-	touch-action: pan-x;
-	overscroll-behavior-x: contain;
-	display: block;
-	white-space: nowrap;
-	position: relative;
-	scroll-behavior: smooth;
-	scrollbar-width: none; /* Firefox */
-	-ms-overflow-style: none; /* IE and Edge */
-}
-
-.mobile-nav-scroll::-webkit-scrollbar {
-	display: none; /* Chrome, Safari, Opera */
-}
-
-.mobile-nav-scroll > * {
-	display: inline-flex;
-	min-width: max-content;
-}
-
 /* Ensure mobile viewport is properly handled */
 @media screen and (max-width: 640px) {
-	.mobile-nav-scroll {
-		padding-left: 0.5rem;
-		padding-right: 0.5rem;
-	}
-	
 	/* Improve touch targets on mobile */
-	.mobile-nav-scroll button {
+	button {
 		min-height: 44px;
-		min-width: 44px;
 	}
 }
 
