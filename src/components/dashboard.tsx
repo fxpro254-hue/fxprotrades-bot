@@ -67,19 +67,9 @@ export default function Dashboard() {
   const [ticks, setTicks] = useState<number[]>([]);
   const [botRunning, setBotRunning] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("dark");
-  const [navOrder, setNavOrder] = useState([...navItems, { id: "settings", label: "Settings" }]);
   
   const handleNavClick = (id: string) => {
     setActiveNav(id);
-    
-    // Move clicked item to the front
-    const allItems = [...navItems, { id: "settings", label: "Settings" }];
-    const clickedItem = allItems.find(item => item.id === id);
-    const otherItems = allItems.filter(item => item.id !== id);
-    
-    if (clickedItem) {
-      setNavOrder([clickedItem, ...otherItems]);
-    }
   };
 
   useEffect(() => {
@@ -198,10 +188,18 @@ export default function Dashboard() {
               </div>
             </div>
             
-            {/* Navigation - reordering system */}
-            <div className="w-full">
-              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
-                {navOrder.map((item) => (
+            {/* Navigation - horizontal scroll with arrow buttons */}
+            <div className="w-full relative">
+              <div 
+                id="mobile-nav"
+                className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide scroll-smooth"
+                style={{
+                  scrollbarWidth: 'none',
+                  msOverflowStyle: 'none',
+                  WebkitOverflowScrolling: 'touch'
+                }}
+              >
+                {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
@@ -214,7 +212,37 @@ export default function Dashboard() {
                     {item.label}
                   </button>
                 ))}
+                <button
+                  onClick={() => handleNavClick("settings")}
+                  className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-all ${
+                    activeNav === "settings"
+                      ? "bg-yellow-500 text-black font-semibold"
+                      : "text-foreground bg-muted hover:bg-muted/80"
+                  }`}
+                >
+                  Settings
+                </button>
               </div>
+              
+              {/* Arrow buttons for scrolling */}
+              <button
+                onClick={() => {
+                  const nav = document.getElementById('mobile-nav');
+                  if (nav) nav.scrollBy({ left: -200, behavior: 'smooth' });
+                }}
+                className="absolute left-0 top-0 bottom-2 w-8 bg-gradient-to-r from-background to-transparent flex items-center justify-center text-foreground hover:text-yellow-500"
+              >
+                ←
+              </button>
+              <button
+                onClick={() => {
+                  const nav = document.getElementById('mobile-nav');
+                  if (nav) nav.scrollBy({ left: 200, behavior: 'smooth' });
+                }}
+                className="absolute right-0 top-0 bottom-2 w-8 bg-gradient-to-l from-background to-transparent flex items-center justify-center text-foreground hover:text-yellow-500"
+              >
+                →
+              </button>
             </div>
           </div>
 
@@ -260,7 +288,7 @@ export default function Dashboard() {
             <div className="w-full">
               <nav className="overflow-x-auto overflow-y-hidden scroll-smooth whitespace-nowrap no-scrollbar">
                 <div className="flex items-center space-x-2 min-w-max pb-2">
-                  {navOrder.map((item) => (
+                  {navItems.map((item) => (
                     <button
                       key={item.id}
                       onClick={() => handleNavClick(item.id)}
@@ -273,6 +301,16 @@ export default function Dashboard() {
                       {item.label}
                     </button>
                   ))}
+                  <button
+                    onClick={() => handleNavClick("settings")}
+                    className={`px-4 py-2 rounded-md transition-all flex-shrink-0 ${
+                      activeNav === "settings"
+                        ? "bg-yellow-500 text-black font-semibold"
+                        : "text-foreground hover:bg-muted"
+                    }`}
+                  >
+                    Settings
+                  </button>
                 </div>
               </nav>
             </div>
