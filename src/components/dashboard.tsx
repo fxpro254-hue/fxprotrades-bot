@@ -53,6 +53,11 @@ const navItems: NavItem[] = [
     label: "Free Bots",
     icon: "M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4",
   },
+  {
+    id: "enhanced-trading",
+    label: "Enhanced Trading",
+    icon: "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6",
+  },
 ];
 
 export default function Dashboard() {
@@ -491,12 +496,56 @@ export default function Dashboard() {
           </>
           )}
 
-          {activeNav !== "dashboard" && activeNav !== "settings" && (
+          {activeNav === "enhanced-trading" && (
+            <div>
+              <Card className="p-6 border-yellow-500/20 mb-6">
+                <h3 className="text-xl font-semibold mb-2">Enhanced Trading Platform</h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Access the new advanced trading features including real-time proposals, risk management, and portfolio analytics.
+                </p>
+                <div className="flex items-center space-x-3">
+                  <Button 
+                    onClick={() => window.open('/enhanced', '_blank')} 
+                    className="bg-yellow-500 hover:bg-yellow-600 text-black"
+                  >
+                    Open Enhanced Trading
+                  </Button>
+                  <Button onClick={() => setActiveNav("dashboard")} variant="outline">
+                    Back to Dashboard
+                  </Button>
+                </div>
+              </Card>
+              
+              <Card className="p-6 border-yellow-500/20">
+                <h4 className="font-semibold text-lg mb-4">New Features Available</h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h5 className="font-medium mb-2">🎯 Advanced Trading Interface</h5>
+                    <p className="text-sm text-muted-foreground">Real-time contract proposals with all parameters and instant execution</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h5 className="font-medium mb-2">📊 Professional Portfolio</h5>
+                    <p className="text-sm text-muted-foreground">Complete position management with P&L tracking and performance analytics</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h5 className="font-medium mb-2">🛡️ Risk Management</h5>
+                    <p className="text-sm text-muted-foreground">Intelligent position sizing and automated risk controls</p>
+                  </div>
+                  <div className="p-4 bg-muted rounded-lg">
+                    <h5 className="font-medium mb-2">📈 Market Analysis</h5>
+                    <p className="text-sm text-muted-foreground">Technical indicators, trend analysis, and price alerts</p>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          )}
+
+          {activeNav !== "dashboard" && activeNav !== "settings" && activeNav !== "enhanced-trading" && (
             <Card className="p-8 border-yellow-500/20">
               <h3 className="text-xl font-semibold mb-2">{navItems.find((n) => n.id === activeNav)?.label}</h3>
               <p className="text-sm text-muted-foreground mb-6">
                 This section is under active development. Core real-time data, portfolio, transactions and trading helpers
-                are available in the API layer. UI workflows for “{navItems.find((n) => n.id === activeNav)?.label}” will be enabled here.
+                are available in the API layer. UI workflows for "{navItems.find((n) => n.id === activeNav)?.label}" will be enabled here.
               </p>
               <div className="flex items-center space-x-3">
                 <Button onClick={() => setActiveNav("dashboard")} variant="outline">
