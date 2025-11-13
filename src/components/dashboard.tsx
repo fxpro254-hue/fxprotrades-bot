@@ -188,20 +188,21 @@ export default function Dashboard() {
             </div>
             
             {/* Navigation - horizontal scroll */}
-            <div className="w-full">
+            <div className="w-full overflow-hidden">
               <div 
-                className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide"
+                className="flex gap-2 overflow-x-scroll pb-2 scrollbar-hide pr-4"
                 style={{ 
                   WebkitOverflowScrolling: "touch",
                   scrollbarWidth: "none",
-                  msOverflowStyle: "none"
+                  msOverflowStyle: "none",
+                  touchAction: "pan-x"
                 }}
               >
                 {navItems.map((item) => (
                   <button
                     key={item.id}
                     onClick={() => handleNavClick(item.id)}
-                    className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors ${
+                    className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors min-w-max ${
                       activeNav === item.id
                         ? "bg-yellow-500 text-black font-semibold"
                         : "text-foreground bg-muted hover:bg-muted/80"
@@ -212,7 +213,7 @@ export default function Dashboard() {
                 ))}
                 <button
                   onClick={() => handleNavClick("settings")}
-                  className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors ${
+                  className={`px-3 py-2 rounded-md text-xs whitespace-nowrap flex-shrink-0 transition-colors min-w-max ${
                     activeNav === "settings"
                       ? "bg-yellow-500 text-black font-semibold"
                       : "text-foreground bg-muted hover:bg-muted/80"
@@ -532,10 +533,10 @@ export default function Dashboard() {
           )}
 
           {activeNav === "settings" && (
-            <Card className="p-6 border-yellow-500/20">
+            <Card className="p-4 sm:p-6 border-yellow-500/20">
               <h3 className="font-semibold text-lg mb-4">Appearance</h3>
-              <div className="flex items-center justify-between bg-muted rounded-lg p-4">
-                <div>
+              <div className="bg-muted rounded-lg p-4">
+                <div className="mb-4">
                   <p className="font-medium">Theme</p>
                   <p className="text-sm text-muted-foreground">Toggle application color scheme</p>
                 </div>
