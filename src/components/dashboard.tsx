@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { DerivAPI, logout } from "@/lib/deriv-api";
+import { DerivAPI, logout } from "@/lib/deriv-api-enhanced";
 
 type NavItem = {
   id: string;
@@ -108,50 +108,35 @@ export default function Dashboard() {
         ? localStorage.getItem("deriv_token")
         : null;
     if (token) {
-      api.authorize(token, () => {
+      api.authorize(token).then(() => {
         api.subscribeBalance(
           (data) => {
-            if (
-              data.balance &&
-              typeof data.balance === "object" &&
-              "balance" in data.balance
-            ) {
-              const b = data.balance as { balance: string; currency: string };
-              setBalance(b.balance);
-              setCurrency(b.currency);
+            if (data.balance) {
+              setBalance(data.balance.balance.toString());
+              setCurrency(data.balance.currency);
             }
           },
           (subId) => {
             balanceSubId = subId;
           },
         );
-      });
+      }).catch(console.error);
     } else {
       // No auth: perform a one-off public balance fetch (will likely be empty)
-      api.getAccountBalance((data) => {
-        if (
-          data.balance &&
-          typeof data.balance === "object" &&
-          "balance" in data.balance
-        ) {
-          const b = data.balance as { balance: string; currency: string };
-          setBalance(b.balance);
-          setCurrency(b.currency);
+      api.getAccountBalance().then((data) => {
+        if (data.balance) {
+          setBalance(data.balance.balance.toString());
+          setCurrency(data.balance.currency);
         }
-      });
+      }).catch(console.error);
     }
 
     // Ticks subscription for chart
     api.subscribeTicks(
       "R_100",
       (data) => {
-        if (
-          data.tick &&
-          typeof data.tick === "object" &&
-          "quote" in data.tick
-        ) {
-          const tickData = data.tick as { quote: number };
-          setTicks((prev) => [...prev.slice(-50), tickData.quote]);
+        if (data.tick) {
+          setTicks((prev) => [...prev.slice(-50), data.tick.quote]);
         }
       },
       (subId) => {
