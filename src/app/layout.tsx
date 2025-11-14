@@ -15,9 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FxProTrades - Automated Trading Bot Platform",
+  title: "FX PRO - Where Strategy Meets Success",
   description:
-    "Build and deploy automated trading bots without coding. Powered by Deriv.",
+    "Professional automated trading platform where strategy meets success. Powered by Deriv.",
   icons: {
     icon: "/favicon.svg",
     apple: "/icon-512.svg",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "FxProTrades",
+    title: "FX PRO",
   },
   viewport: {
     width: "device-width",

@@ -1,7 +1,7 @@
 {
-    "name": "FxProTrades - Automated Trading Bot Platform",
-    "short_name": "FxProTrades",
-    "description": "Build and deploy automated trading bots without coding. Powered by Deriv.",
+    "name": "FX PRO - Where Strategy Meets Success",
+    "short_name": "FX PRO",
+    "description": "Professional automated trading platform where strategy meets success. Powered by Deriv.",
     "start_url": "/",
     "display": "standalone",
     "background_color": "#000000",
