@@ -134,16 +134,24 @@ export default function DashboardV2() {
 
   const points = computePolylinePoints(ticks);
 
-  // Show loading state while connecting
+  // Show loading state while connecting with timeout
   if (isLoading || !isConnected) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Card className="p-6 max-w-md text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto mb-4"></div>
           <h2 className="text-lg font-semibold mb-2">Connecting to Deriv API...</h2>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground mb-4">
             {isLoading ? "Initializing connection..." : "Establishing WebSocket connection..."}
           </p>
+          <Button 
+            onClick={() => window.location.reload()} 
+            variant="outline" 
+            size="sm"
+            className="mt-2"
+          >
+            Skip Connection & Continue
+          </Button>
         </Card>
       </div>
     );

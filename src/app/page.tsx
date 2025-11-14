@@ -5,7 +5,7 @@ import Dashboard from "@/components/DashboardV2";
 import LandingPage from "@/components/landing-page";
 import LoadingScreen from "@/components/LoadingScreen";
 import { DerivApiProvider } from "@/contexts/DerivApiContext";
-import { getStoredAuth, handleOAuthCallback } from "@/services/derivApi";
+import { getStoredAuth, handleOAuthCallback } from "@/services/derivApiSimple";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);

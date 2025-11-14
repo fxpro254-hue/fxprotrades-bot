@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { derivApiService, AccountInfo, DerivSubscription } from '@/services/derivApi';
+import { simpleDerivApiService as derivApiService, AccountInfo, DerivSubscription } from '@/services/derivApiSimple';
 
 interface DerivApiContextType {
   // Connection state

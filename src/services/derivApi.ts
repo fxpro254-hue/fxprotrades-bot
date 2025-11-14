@@ -74,13 +74,41 @@ class DerivAPIService {
           app_id: DERIV_APP_ID,
         });
 
+        console.log('🔌 Setting up event listeners and waiting for connection...');
         this.setupEventListeners();
         
-        // Wait a moment for connection to establish
-        setTimeout(() => {
-          console.log('✅ Deriv API initialized successfully');
-          resolve(this.api);
-        }, 1000);
+        // Wait for actual connection or timeout
+        let connectionTimeout: NodeJS.Timeout;
+        let connectionResolved = false;
+
+        const connectionPromise = new Promise<void>((connectResolve, connectReject) => {
+          // Set up connection timeout (30 seconds)
+          connectionTimeout = setTimeout(() => {
+            if (!connectionResolved) {
+              connectionResolved = true;
+              console.log('⚠️ Connection timeout - proceeding anyway');
+              connectResolve(); // Don't reject, just proceed
+            }
+          }, 30000);
+
+          // Listen for connection success
+          const originalOnOpen = this.api.onOpen;
+          this.api.onOpen = (callback: () => void) => {
+            originalOnOpen.call(this.api, () => {
+              if (!connectionResolved) {
+                connectionResolved = true;
+                clearTimeout(connectionTimeout);
+                console.log('✅ WebSocket connection established!');
+                connectResolve();
+              }
+              callback();
+            });
+          };
+        });
+
+        await connectionPromise;
+        console.log('✅ Deriv API initialized successfully');
+        resolve(this.api);
         
       } catch (error) {
         console.error('❌ Failed to initialize Deriv API:', error);
