@@ -60,9 +60,13 @@ class DerivAPIService {
 
     this.initPromise = new Promise(async (resolve, reject) => {
       try {
+        console.log('🔄 Initializing Deriv API...');
+        
         // Dynamic import for Next.js compatibility - fixed approach
         const derivModule = await import('@deriv/deriv-api');
         const DerivAPIClass = derivModule.default;
+
+        console.log('📦 Deriv API module loaded, creating connection...');
 
         // Initialize the official Deriv API
         this.api = new DerivAPIClass({
@@ -71,9 +75,15 @@ class DerivAPIService {
         });
 
         this.setupEventListeners();
-        resolve(this.api);
+        
+        // Wait a moment for connection to establish
+        setTimeout(() => {
+          console.log('✅ Deriv API initialized successfully');
+          resolve(this.api);
+        }, 1000);
+        
       } catch (error) {
-        console.error('Failed to initialize Deriv API:', error);
+        console.error('❌ Failed to initialize Deriv API:', error);
         reject(error);
       }
     });
@@ -497,6 +507,25 @@ class DerivAPIService {
       isConnected: this.isConnected,
       isAuthorized: this.isAuthorized,
     };
+  }
+
+  /**
+   * Force connection attempt
+   */
+  async forceConnect(): Promise<void> {
+    try {
+      await this.ensureApiAvailable();
+      console.log('🔄 Forcing connection attempt...');
+      
+      // If not connected, try to establish connection
+      if (!this.isConnected && this.api) {
+        // The connection should happen automatically, but we can trigger it
+        await this.ensureConnection();
+      }
+    } catch (error) {
+      console.error('❌ Force connection failed:', error);
+      throw error;
+    }
   }
 
   /**

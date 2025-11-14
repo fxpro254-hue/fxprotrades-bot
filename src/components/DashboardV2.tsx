@@ -134,6 +134,21 @@ export default function DashboardV2() {
 
   const points = computePolylinePoints(ticks);
 
+  // Show loading state while connecting
+  if (isLoading || !isConnected) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="p-6 max-w-md text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-yellow-500 mx-auto mb-4"></div>
+          <h2 className="text-lg font-semibold mb-2">Connecting to Deriv API...</h2>
+          <p className="text-muted-foreground">
+            {isLoading ? "Initializing connection..." : "Establishing WebSocket connection..."}
+          </p>
+        </Card>
+      </div>
+    );
+  }
+
   // Show error if there's a connection issue
   if (error) {
     return (

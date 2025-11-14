@@ -42,7 +42,7 @@ export function DerivApiProvider({ children }: DerivApiProviderProps) {
   const [error, setError] = useState<string | null>(null);
   const [balanceSubscription, setBalanceSubscription] = useState<DerivSubscription | null>(null);
 
-  // Check connection status periodically
+  // Check connection status periodically and attempt initial connection
   useEffect(() => {
     const checkStatus = () => {
       const status = derivApiService.getConnectionStatus();
@@ -53,11 +53,24 @@ export function DerivApiProvider({ children }: DerivApiProviderProps) {
       setAccountInfo(info);
     };
 
-    // Initial check
-    checkStatus();
+    // Initial connection attempt
+    const initializeConnection = async () => {
+      try {
+        console.log('🔄 DerivApiContext: Attempting initial connection...');
+        await derivApiService.forceConnect();
+        checkStatus();
+      } catch (error) {
+        console.error('❌ Initial connection failed:', error);
+        setError(error instanceof Error ? error.message : 'Failed to connect to Deriv API');
+      }
+    };
 
-    // Check every 5 seconds
-    const interval = setInterval(checkStatus, 5000);
+    // Initial check and connection attempt
+    checkStatus();
+    initializeConnection();
+
+    // Check every 3 seconds (more frequent for better UX)
+    const interval = setInterval(checkStatus, 3000);
 
     return () => clearInterval(interval);
   }, []);
