@@ -178,6 +178,10 @@ class DerivAPIService {
     try {
       await this.ensureConnection();
       
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
+      
       const response = await this.api.balance();
       
       if (response.error) {
@@ -201,6 +205,10 @@ class DerivAPIService {
   async subscribeToBalance(callback: (data: { balance: number; currency: string }) => void): Promise<DerivSubscription> {
     try {
       await this.ensureConnection();
+      
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
       
       const subscription = await this.api.subscribe({
         balance: 1,
@@ -244,6 +252,10 @@ class DerivAPIService {
     try {
       await this.ensureConnection();
       
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
+      
       const subscription = await this.api.subscribe({
         ticks: symbol,
         subscribe: 1,
@@ -279,6 +291,10 @@ class DerivAPIService {
     try {
       await this.ensureConnection();
       
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
+      
       const response = await this.api.proposal({
         proposal: 1,
         symbol: params.symbol,
@@ -308,6 +324,10 @@ class DerivAPIService {
   async subscribeToProposal(params: TradeParams, callback: (data: any) => void): Promise<DerivSubscription> {
     try {
       await this.ensureConnection();
+      
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
       
       const subscription = await this.api.subscribe({
         proposal: 1,
@@ -355,6 +375,10 @@ class DerivAPIService {
         throw new Error('User must be authorized to place trades');
       }
 
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
+
       const response = await this.api.buy({
         buy: proposalId,
         price: price,
@@ -380,6 +404,10 @@ class DerivAPIService {
     try {
       await this.ensureConnection();
       
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
+      
       const response = await this.api.portfolio();
       
       if (response.error) {
@@ -400,6 +428,10 @@ class DerivAPIService {
   async getTransactionHistory(limit = 50): Promise<any> {
     try {
       await this.ensureConnection();
+      
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
       
       const response = await this.api.statement({
         statement: 1,
@@ -424,6 +456,10 @@ class DerivAPIService {
   async getActiveSymbols(): Promise<any> {
     try {
       await this.ensureConnection();
+      
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
       
       const response = await this.api.activeSymbols();
       
@@ -455,7 +491,9 @@ class DerivAPIService {
    */
   disconnect(): void {
     this.unsubscribeAll();
-    this.api.disconnect();
+    if (this.api) {
+      this.api.disconnect();
+    }
     this.isConnected = false;
     this.isAuthorized = false;
     this.accountInfo = null;
