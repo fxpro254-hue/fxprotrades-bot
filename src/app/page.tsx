@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Dashboard from "@/components/DashboardV2";
 import LandingPage from "@/components/landing-page";
-import Dashboard from "@/components/dashboard";
 import LoadingScreen from "@/components/LoadingScreen";
-import { getStoredAuth, handleOAuthCallback } from "@/lib/deriv-api";
+import { DerivApiProvider } from "@/contexts/DerivApiContext";
+import { getStoredAuth, handleOAuthCallback } from "@/services/derivApi";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -39,8 +40,16 @@ export default function Home() {
   }
 
   if (!isAuthenticated) {
-    return <LandingPage onAuthenticated={() => setIsAuthenticated(true)} />;
+    return (
+      <DerivApiProvider>
+        <LandingPage onAuthenticated={() => setIsAuthenticated(true)} />
+      </DerivApiProvider>
+    );
   }
 
-  return <Dashboard />;
+  return (
+    <DerivApiProvider>
+      <Dashboard />
+    </DerivApiProvider>
+  );
 }
