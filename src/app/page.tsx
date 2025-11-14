@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from "react";
 import LandingPage from "@/components/landing-page";
-import Dashboard from "@/components/DashboardV2";
+import Dashboard from "@/components/dashboard";
 import LoadingScreen from "@/components/LoadingScreen";
-import { DerivApiProvider } from "@/contexts/DerivApiContext";
-import { getStoredAuth, handleOAuthCallback } from "@/services/derivApi";
+import { getStoredAuth, handleOAuthCallback } from "@/lib/deriv-api";
 
 export default function Home() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -40,16 +39,8 @@ export default function Home() {
   }
 
   if (!isAuthenticated) {
-    return (
-      <DerivApiProvider>
-        <LandingPage onAuthenticated={() => setIsAuthenticated(true)} />
-      </DerivApiProvider>
-    );
+    return <LandingPage onAuthenticated={() => setIsAuthenticated(true)} />;
   }
 
-  return (
-    <DerivApiProvider>
-      <Dashboard />
-    </DerivApiProvider>
-  );
+  return <Dashboard />;
 }
