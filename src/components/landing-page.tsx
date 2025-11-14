@@ -9,7 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { getOAuthURL, AFFILIATE_LINK } from "@/lib/deriv-api";
+import { getOAuthURL, AFFILIATE_LINK } from "@/services/derivApi";
 
 export default function LandingPage({
   onAuthenticated,
