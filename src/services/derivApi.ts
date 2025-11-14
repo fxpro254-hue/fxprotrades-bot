@@ -144,6 +144,10 @@ class DerivAPIService {
     try {
       await this.ensureConnection();
       
+      if (!this.api) {
+        throw new Error('API not initialized');
+      }
+      
       const response = await this.api.authorize(token);
       
       if (response.error) {
